@@ -14,6 +14,10 @@ deb http://winnie.kuis.kyoto-u.ac.jp/HARK/harkrepos trusty non-free\n\
 deb-src http://winnie.kuis.kyoto-u.ac.jp/HARK/harkrepos trusty non-free\
 " > /etc/apt/sources.list.d/hark.list
 
+# Register ROS apt repository
+RUN wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | sudo apt-key add - && \
+    echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list
+
 # Hark-designer dependency
 RUN add-apt-repository ppa:chris-lea/node.js && \
     apt-get update && \
@@ -29,6 +33,17 @@ RUN apt-get install -y \
 # Install the Python wrapper for HARK
 RUN apt-get install -y \
     hark-python
+
+# Install ROS
+RUN apt-get install -y \
+    ros-indigo-ros-base \
+    python-rosinstall && \
+    echo 'source /opt/ros/indigo/setup.bash' >> ~/.bashrc
+
+# Install HARK-ROS
+RUN apt-get install -y \
+    hark-ros-indigo \
+    hark-ros-stacks-indigo
 
 # Install ALSA for microphone access
 RUN apt-get install -y alsa-utils && \
